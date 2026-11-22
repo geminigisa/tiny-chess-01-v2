@@ -105,7 +105,7 @@ def ranked(g):
    if atk(r,r.index('k'),1):continue
    u=uci(b,m,blk)
    if u not in lg:continue
-   cs.append((-neg(r,t,f,w,2,1),u))
+   cs.append((neg(r,t,f,w,2,1),u))
  except A:pass
  cs.sort()
  return [u for v,u in cs] or sorted(lg)
