@@ -45,12 +45,13 @@ def gen(b,e,cr):
     if b[j].islower():m.append((i,j))
  if cr&1 and b[96:99]=='..R' and not any(atk(b,x,0)for x in(95,96,97)):m.append((95,97))
  if cr&2 and b[91:95]=='R...' and not any(atk(b,x,0)for x in(95,94,93)):m.append((95,93))
+ m.sort(key=lambda x:V.get(b[x[1]].upper(),0),reverse=True)
  return m
 def mk(b,s,e,cr,m,q='Q'):
  i,j=m;p=b[i];n=b[:i]+'.'+b[i+1:];c=n[j];d=-pst(p,i)
  if p=='P' and j==e:n=n[:j+10]+'.'+n[j+11:];d+=100+pst('P',fi(j+10));c='p'
  elif c in 'pnbrq':d+=V[c.upper()]+pst(c.upper(),fi(j))
- q=q if p=='P' and j<29 else p;d+=pst(q,j);n=n[:j]+q+n[j+1:]
+ q=q*(p=='P'and j<29)or p;d+=pst(q,j);n=n[:j]+q+n[j+1:]
  if p=='K' and abs(j-i)==2:
   rf=98 if j>i else 91;rt=96 if j>i else 94
   n=n[:rf]+'.'+n[rf+1:];n=n[:rt]+'R'+n[rt+1:];d+=-pst('R',rf)+pst('R',rt)
@@ -90,19 +91,18 @@ def uci(b,m,blk):
  return sqn(i)+sqn(j)+'q'*(b[m[0]]=='P'and m[1]<29)
 def idx(u):return ord(u[0])-6-10*(ord(u[1])-49)
 def replay(ms):
- b=I;s=0;e=0;cr=15;h={(I,0,15)}
+ b=I;s=0;e=0;cr=15
  for k,u in enumerate(ms):
   i=idx(u[:2]);j=idx(u[2:4]);q=u[4:].upper() or 'Q'
   if k%2:i,j=fi(i),fi(j)
   b,s,e,cr=mk(b,s,e,cr,(i,j),q)
-  h.add((b,e,cr))
- return b,s,e,cr,h
+ return b,s,e,cr
 def post(u,o):
- q=r.Request(u,data=json.dumps(o).encode(),headers={'Content-Type':'application/json'})
+ q=r.Request(u,data=json.dumps(o).encode())
  return json.loads(r.urlopen(q).read())
 def ranked(g):
  global ND
- b,s,e,cr,h=replay(g['moves']);blk=g['colour']=='black';lg=set(g['legal_moves']);ND=0
+ b,s,e,cr=replay(g['moves']);blk=g['colour']=='black';lg=set(g['legal_moves']);ND=0
  best=sorted(lg)
  for D in range(1,9):
   cs=[]
