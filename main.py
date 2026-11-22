@@ -61,28 +61,27 @@ def mk(b,s,e,cr,m,q='Q'):
  if c=='r':o&=2 if j==28 else 1 if j==21 else 3
  ne=i-10 if p=='P'and j==i-20 else 0
  return F(n).swapcase(),-(s+d),fi(ne) if ne else 0,o|(a<<2)
-ND=0;K={}
+ND=0;H=set()
 BU=60000
 class A(Exception):pass
 def S(b,s,e,cr,d,y,a,B):
  global ND
  ND+=1
  if ND>BU:raise A
+ if (b,e,cr)in H:return 0
  k=b.index('K')
  if d<1:
   if s>=B:return s
   a=max(a,s);c=atk(b,k,0)
  n=0
- kl=K.get(y);ms=gen(b,e,cr)
- if kl in ms:ms.remove(kl);ms.insert(0,kl)
- for m in ms:
+ for m in gen(b,e,cr):
   i,j=m
   if d<1 and not c and b[j]=='.'and(b[i]!='P'or(j!=e and j>28)):continue
   r,t,f,w=mk(b,s,e,cr,m)
   if atk(r,r.index('k'),1):continue
   n=1
   v=-S(r,t,f,w,d-1,y+1,-B,-a)
-  if v>=B:K[y]=m;return v
+  if v>=B:return v
   if v>a:a=v
  if not n:return -100000+y if(d<1 and c)or(d>0 and atk(b,k,0))else a*(d<1)
  return a
@@ -93,18 +92,19 @@ def uci(b,m,blk):
  return sqn(i)+sqn(j)+'q'*(b[m[0]]=='P'and m[1]<29)
 def idx(u):return ord(u[0])-6-10*(int(u[1])-1)
 def replay(ms):
- b=I;s=0;e=0;cr=15
+ b=I;s=0;e=0;cr=15;h={(I,0,15)}
  for k,u in enumerate(ms):
   i=idx(u[:2]);j=idx(u[2:4]);q=u[4:].upper()or 'Q'
   if k%2:i,j=fi(i),fi(j)
   b,s,e,cr=mk(b,s,e,cr,(i,j),q)
- return b,s,e,cr
+  h.add((b,e,cr))
+ return b,s,e,cr,h
 def post(u,o):
  q=r.Request(u,data=json.dumps(o).encode())
  return json.loads(r.urlopen(q).read())
 def ranked(g):
- global ND
- b,s,e,cr=replay(g['moves']);blk=g['colour']=='black';lg=set(g['legal_moves']);ND=0
+ global ND,H
+ b,s,e,cr,h=replay(g['moves']);H=h;blk=g['colour'][0]=='b';lg=set(g['legal_moves']);ND=0
  best=sorted(lg)
  for D in range(1,9):
   cs=[]
