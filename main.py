@@ -36,7 +36,7 @@ def gen(b,e,cr):
   elif p in 'NK':
    for d in N if p=='N' else G:
     j=i+d
-    if b[j]=='.' or b[j].islower():m.append((i,j))
+    if b[j] in '.pnbrqk':m.append((i,j))
   else:
    for d in D if p=='B' else R if p=='R' else D+R:
     j=i+d
@@ -59,30 +59,25 @@ def mk(b,s,e,cr,m,q='Q'):
  if p=='K':a=0
  elif p=='R':a&=2 if i==98 else 1 if i==91 else 3
  if c=='r':o&=2 if j==28 else 1 if j==21 else 3
- ne=i-10 if p=='P' and j==i-20 else 0
+ ne=i-10 if p=='P'and j==i-20 else 0
  return F(n).swapcase(),-(s+d),fi(ne) if ne else 0,o|(a<<2)
 ND=0
-BU=60000
+BU=120000
 class A(Exception):pass
 def S(b,s,e,cr,d,y,a,B):
  global ND
  ND+=1
  if ND>BU:raise A
- k=b.index('K')
- if d<1:
-  if s>=B:return s
-  a=max(a,s);c=atk(b,k,0)
+ if d<1:return s
  n=0
  for m in gen(b,e,cr):
-  i,j=m
-  if d<1 and not c and b[j]=='.'and(b[i]!='P'or(j!=e and j>28)):continue
   r,t,f,w=mk(b,s,e,cr,m)
   if atk(r,r.index('k'),1):continue
   n=1
   v=-S(r,t,f,w,d-1,y+1,-B,-a)
   if v>=B:return v
   if v>a:a=v
- if not n:return -100000+y if(d<1 and c)or(d>0 and atk(b,k,0))else a*(d<1)
+ if not n:return -100000+y if atk(b,b.index('K'),0)else 0
  return a
 def sqn(i):return 'abcdefgh'[(i-21)%10]+chr(56-(i-21)//10)
 def uci(b,m,blk):
