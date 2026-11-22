@@ -9,7 +9,7 @@ def F(b):return ''.join(b[i:i+10]for i in range(110,-1,-10))
 def fi(i):return 112-i+2*(i-21)%20
 def pst(p,i):
  f=(i-21)%10;k=7-(i-21)//10;c=7-abs(2*f-7)-abs(2*k-7)
- return 10*k if p=='P'else 4*c if p=='N'else 3*c if p=='B'else 2*c if p=='Q'else 10*(k==6) if p=='R'else 8*(k<2)-2*c
+ return 10*k if p=='P'else 4*c if p=='N'else 3*c if p=='B'else 2*c if p=='Q'else 10*(k==6)if p=='R'else 8*(k<2)-2*c
 def atk(b,s,w):
  o=1 if w else -1;q='P' if w else 'p'
  if q in(b[s+9*o],b[s+11*o]):return 1
@@ -30,21 +30,21 @@ def gen(b,e,cr):
    j=i-10
    if b[j]=='.':
     m.append((i,j))
-    if 80<i<89and b[i-20]=='.':m.append((i,i-20))
+    if 80<i<89 and b[i-20]=='.':m.append((i,i-20))
    for j in(i-9,i-11):
     if b[j].islower()or j==e and b[j]=='.':m.append((i,j))
   elif p in 'NK':
-   for d in N if p=='N' else G:
+   for d in N if p=='N'else G:
     j=i+d
     if b[j]=='.'or b[j].islower():m.append((i,j))
   else:
-   for d in D if p=='B' else R if p=='R' else D+R:
+   for d in D if p=='B'else R if p=='R'else D+R:
     j=i+d
     while b[j]=='.':
      m.append((i,j));j+=d
     if b[j].islower():m.append((i,j))
- if cr&1and b[96:99]=='..R' and not any(atk(b,x,0)for x in(95,96,97)):m.append((95,97))
- if cr&2and b[91:95]=='R...' and not any(atk(b,x,0)for x in(95,94,93)):m.append((95,93))
+ if cr&1 and b[96:99]=='..R' and not any(atk(b,x,0)for x in(95,96,97)):m.append((95,97))
+ if cr&2 and b[91:95]=='R...' and not any(atk(b,x,0)for x in(95,94,93)):m.append((95,93))
  m.sort(key=lambda x:V.get(b[x[1]].upper(),0),reverse=True)
  return m
 def mk(b,s,e,cr,m,q='Q'):
@@ -77,14 +77,14 @@ def S(b,s,e,cr,d,y,a,B):
  if kl in ms:ms.remove(kl);ms.insert(0,kl)
  for m in ms:
   i,j=m
-  if d<1and not c and b[j]=='.'and(b[i]!='P'or(j!=e and j>28)):continue
+  if d<1 and not c and b[j]=='.'and(b[i]!='P'or(j!=e and j>28)):continue
   r,t,f,w=mk(b,s,e,cr,m)
   if atk(r,r.index('k'),1):continue
   n=1
   v=-S(r,t,f,w,d-1,y+1,-B,-a)
   if v>=B:K[y]=m;return v
   if v>a:a=v
- if not n:return -100000+y if(d<1and c)or(d>0and atk(b,k,0))else a*(d<1)
+ if not n:return -100000+y if(d<1 and c)or(d>0 and atk(b,k,0))else a*(d<1)
  return a
 def sqn(i):return 'abcdefgh'[(i-21)%10]+chr(56-(i-21)//10)
 def uci(b,m,blk):
