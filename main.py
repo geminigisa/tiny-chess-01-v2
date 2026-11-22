@@ -9,7 +9,7 @@ def F(b):return ''.join(b[i:i+10]for i in range(110,-1,-10))
 def fi(i):return 112-i+2*(i-21)%20
 def pst(p,i):
  f=(i-21)%10;k=7-(i-21)//10;c=7-abs(2*f-7)-abs(2*k-7)
- return 10*k if p=='P'else 4*c if p=='N' else 3*c if p=='B' else 2*c if p=='Q' else 10*(k==6) if p=='R' else 8*(k<2)-2*c
+ return 10*k if p=='P'else 4*c if p=='N'else 3*c if p=='B'else 2*c if p=='Q'else 10*(k==6) if p=='R'else 8*(k<2)-2*c
 def atk(b,s,w):
  o=1 if w else -1;q='P' if w else 'p'
  if q in(b[s+9*o],b[s+11*o]):return 1
@@ -20,7 +20,7 @@ def atk(b,s,w):
   j=s+d
   while b[j]=='.':j+=d
   c=b[j]
-  if c==('Q' if w else 'q')or d in D and c==('B' if w else 'b')or d in R and c==('R' if w else 'r'):return 1
+  if c in('QB'if w else'qb')and d in D or c in('QR'if w else'qr')and d in R:return 1
  return 0
 def gen(b,e,cr):
  m=[]
@@ -61,7 +61,7 @@ def mk(b,s,e,cr,m,q='Q'):
  if c=='r':o&=2 if j==28 else 1 if j==21 else 3
  ne=i-10 if p=='P'and j==i-20 else 0
  return F(n).swapcase(),-(s+d),fi(ne) if ne else 0,o|(a<<2)
-ND=0
+ND=0;K={}
 BU=60000
 class A(Exception):pass
 def S(b,s,e,cr,d,y,a,B):
@@ -73,14 +73,16 @@ def S(b,s,e,cr,d,y,a,B):
   if s>=B:return s
   a=max(a,s);c=atk(b,k,0)
  n=0
- for m in gen(b,e,cr):
+ kl=K.get(y);ms=gen(b,e,cr)
+ if kl in ms:ms.remove(kl);ms.insert(0,kl)
+ for m in ms:
   i,j=m
-  if d<1and not c and(b[j]=='.'and(b[i]!='P'or(j!=e and j>28))or(b[j].islower()and s+V[b[j].upper()]+200<a)):continue
+  if d<1and not c and b[j]=='.'and(b[i]!='P'or(j!=e and j>28)):continue
   r,t,f,w=mk(b,s,e,cr,m)
   if atk(r,r.index('k'),1):continue
   n=1
   v=-S(r,t,f,w,d-1,y+1,-B,-a)
-  if v>=B:return v
+  if v>=B:K[y]=m;return v
   if v>a:a=v
  if not n:return -100000+y if(d<1and c)or(d>0and atk(b,k,0))else a*(d<1)
  return a
@@ -112,7 +114,7 @@ def ranked(g):
     if atk(r,r.index('k'),1):continue
     u=uci(b,m,blk)
     if u not in lg:continue
-    cs.append((S(r,t,f,w,D-1,1,-999999,999999),u))
+    cs.append((S(r,t,f,w,D-1,1,-10**6,10**6),u))
   except A:break
   cs.sort();best=[u for _,u in cs]
  return best
